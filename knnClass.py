@@ -116,9 +116,29 @@ k = 25; filename = 'knn_predict_5.pdf'; limits = (-3,4,-3,4); h = 0.1;
 plot_prediction_grid(xx, yy, prediction_grid, filename)
 
 
+from sklearn import datasets
+iris = datasets.load_iris()
+
+predictors = iris.data[:,0:2]
+outcomes = iris.target
+
+plt.plot(predictors[outcomes==0][:,0], predictors[outcomes==0][:,1], "ro")
+plt.plot(predictors[outcomes==1][:,0], predictors[outcomes==1][:,1], "bo")
+plt.plot(predictors[outcomes==2][:,0], predictors[outcomes==2][:,1], "go")
+plt.show()
+
+k = 5; filename = 'iris_grid.pdf'; limits = (4,8,1.5,4.5); h = 0.1;
+(xx, yy, prediction_grid) = make_prediction_grid(predictors, outcomes, limits, h, k)
+plot_prediction_grid(xx, yy, prediction_grid, filename)
 
 
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(predictors, outcomes)
+sk_predictions = knn.predict(predictors)
 
+my_predictions = np.array([knn_predict(p, predictors, outcomes, k=5) for p in predictors])
 
-
+print(np.mean(sk_predictions==outcomes))
+print(np.mean(my_predictions==outcomes))
 
