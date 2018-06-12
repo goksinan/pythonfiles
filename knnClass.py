@@ -63,6 +63,7 @@ def knn_predict(p, points, outcomes, k=5):
     
 outcomes = np.array([0,0,0,0,1,1,1,1,1])
     
+
 def generate_synthetic_data(n=50):
     """Create two sets of points from bivariate normal distribution"""
     points = np.concatenate((ss.norm(0,1).rvs((n,2)), ss.norm(1,1).rvs((n,2))), axis=0)
@@ -91,6 +92,21 @@ def make_prediction_grid(predictors, outcomes, limits, h, k):
             prediction_grid[j,i] = knn_predict(p, predictors, outcomes, k)
             
     return (xx, yy, prediction_grid)
+
+
+def plot_prediction_grid (xx, yy, prediction_grid, filename):
+    """ Plot KNN predictions for every point on the grid."""
+    from matplotlib.colors import ListedColormap
+    background_colormap = ListedColormap (["hotpink","lightskyblue", "yellowgreen"])
+    observation_colormap = ListedColormap (["red","blue","green"])
+    plt.figure(figsize =(7,7))
+    plt.pcolormesh(xx, yy, prediction_grid, cmap = background_colormap, alpha = 0.5)
+    plt.scatter(predictors[:,0], predictors [:,1], c = outcomes, cmap = observation_colormap, s = 50)
+    plt.xlabel('Variable 1'); plt.ylabel('Variable 2')
+    plt.xticks(()); plt.yticks(())
+    plt.xlim (np.min(xx), np.max(xx))
+    plt.ylim (np.min(yy), np.max(yy))
+    plt.savefig(filename)
             
 
 predictors, outcomes = generate_synthetic_data()
